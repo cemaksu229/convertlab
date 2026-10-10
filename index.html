@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ConvertLab | Electronics Bench Edition</title>
+<meta name="description" content="Unit converter and bench calculators for electronics and embedded engineers: STM32 timers, resistor color codes, RC filters, ADC resolution and dB.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d5c45'/%3E%3Cpath d='M4 20h5v-8h7v8h7v-8h5' fill='none' stroke='%23e08a4c' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Public+Sans:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>
+  // Apply the saved or system theme before first paint
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('cl-theme'); } catch (e) {}
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+</head>
+<body>
+
+<header class="top">
+  <a class="mark" href="#">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6"/><path d="M4 20h5v-8h7v8h7v-8h5"/></svg>
+    ConvertLab
+  </a>
+  <nav aria-label="Sections">
+    <a href="#converter">Converter</a>
+    <a href="#bench">Bench tools</a>
+    <a href="#quiz">Quiz</a>
+    <a href="#pricing">Pricing</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch color theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+    <a class="back" href="https://cemaksu229.github.io/">Portfolio</a>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <p class="kicker">Electronics bench edition</p>
+  <h1>Unit conversion for people who own a soldering iron.</h1>
+  <p class="lead">Convert length, mass, pressure, energy, temperature, power, charge, frequency and data size. Then use the bench tools for the numbers firmware and circuits actually ask for: STM32 timer settings, hex and binary bit fields, resistor color codes, RC filters, ADC steps and decibels.</p>
+  <div class="actions">
+    <a class="btn primary" href="#converter">Start converting</a>
+    <a class="btn" href="#bench">Open bench tools</a>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>1 in = 25.4 mm</span><span>1 atm = 101 325 Pa</span><span>1 Ah = 3600 C</span><span>1 hp = 745.7 W</span><span>0 dBm = 1 mW</span><span>1 kWh = 3.6 MJ</span><span>1 MiB = 1 048 576 B</span><span>τ = R · C</span><span>f = f<sub>clk</sub> / ((PSC+1)(ARR+1))</span><span>1 eV = 1.602 × 10⁻¹⁹ J</span><span>0xFF = 255 = 0b1111 1111</span>
+    <span>1 in = 25.4 mm</span><span>1 atm = 101 325 Pa</span><span>1 Ah = 3600 C</span><span>1 hp = 745.7 W</span><span>0 dBm = 1 mW</span><span>1 kWh = 3.6 MJ</span><span>1 MiB = 1 048 576 B</span><span>τ = R · C</span><span>f = f<sub>clk</sub> / ((PSC+1)(ARR+1))</span><span>1 eV = 1.602 × 10⁻¹⁹ J</span><span>0xFF = 255 = 0b1111 1111</span>
+  </div>
+</div>
+
+<!-- Converter -->
+<section id="converter" class="block">
+  <div class="block-head">
+    <h2>Converter</h2>
+    <p>Type in either field. Press <kbd>/</kbd> to jump here from anywhere on the page.</p>
+  </div>
+
+  <div class="tabs" role="tablist" id="catTabs" aria-label="Quantity"></div>
+
+  <div class="panel conv">
+    <div class="conv-row">
+      <div class="field">
+        <label for="fromVal">From</label>
+        <input id="fromVal" class="num" type="text" inputmode="decimal" autocomplete="off" value="1">
+        <select id="fromUnit" aria-label="From unit"></select>
+      </div>
+      <button class="swap" id="swapBtn" type="button" aria-label="Swap units">⇄</button>
+      <div class="field">
+        <label for="toVal">To</label>
+        <input id="toVal" class="num" type="text" inputmode="decimal" autocomplete="off">
+        <select id="toUnit" aria-label="To unit"></select>
+      </div>
+    </div>
+
+    <div class="readout">
+      <span id="formula" aria-live="polite">—</span>
+      <div class="readout-actions">
+        <label class="inline">Precision
+          <select id="precision">
+            <option value="4">4 digits</option>
+            <option value="6" selected>6 digits</option>
+            <option value="10">10 digits</option>
+          </select>
+        </label>
+        <button class="chip-btn" id="copyBtn" type="button">Copy result</button>
+        <button class="chip-btn" id="linkBtn" type="button">Copy link</button>
+      </div>
+    </div>
+
+    <div class="picks">
+      <span class="picks-label">Quick picks</span>
+      <div id="quickPicks" class="chips"></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="panel">
+      <h3>In every unit</h3>
+      <div id="allUnits" class="all-units"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Recent conversions</h3>
+        <button class="text-btn" id="clearHist" type="button">Clear</button>
+      </div>
+      <ol id="history" class="history"></ol>
+      <p id="histEmpty" class="muted">Your last 10 conversions appear here. Select one to load it again. They stay in this browser.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Bench tools -->
+<section id="bench" class="block">
+  <div class="block-head">
+    <h2>Bench tools</h2>
+    <p>Calculators for the questions that come up between the datasheet and the oscilloscope. Results update as you type.</p>
+  </div>
+
+  <div class="tabs" role="tablist" id="toolTabs" aria-label="Bench tool">
+    <button role="tab" aria-selected="true" data-tool="timer">STM32 timer</button>
+    <button role="tab" aria-selected="false" data-tool="bits">Number bases</button>
+    <button role="tab" aria-selected="false" data-tool="resistor">Resistor colors</button>
+    <button role="tab" aria-selected="false" data-tool="rc">RC filter</button>
+    <button role="tab" aria-selected="false" data-tool="ohm">Ohm's law</button>
+    <button role="tab" aria-selected="false" data-tool="adc">ADC</button>
+    <button role="tab" aria-selected="false" data-tool="db">Decibels</button>
+  </div>
+
+  <!-- STM32 timer -->
+  <div class="panel tool" data-pane="timer">
+    <div class="tool-grid">
+      <div>
+        <h3>Timer update frequency</h3>
+        <div class="form">
+          <label>Timer clock <span class="unit-in"><input id="tClk" class="num" type="text" inputmode="decimal" value="84"><span>MHz</span></span></label>
+          <label>Prescaler (PSC) <input id="tPsc" class="num" type="text" inputmode="numeric" value="8399"></label>
+          <label>Auto-reload (ARR) <input id="tArr" class="num" type="text" inputmode="numeric" value="9999"></label>
+          <label>Compare (CCR) for PWM <input id="tCcr" class="num" type="text" inputmode="numeric" value="2500"></label>
+        </div>
+        <p class="hint">84 MHz is the APB1 timer clock on an STM32F407 running at 168 MHz.</p>
+      </div>
+      <div class="out">
+        <div class="big"><span id="tFreq">—</span><small>update frequency</small></div>
+        <dl class="kv">
+          <dt>Period</dt><dd id="tPeriod">—</dd>
+          <dt>Tick (counter resolution)</dt><dd id="tTick">—</dd>
+          <dt>PWM duty cycle</dt><dd id="tDuty">—</dd>
+        </dl>
+        <p class="formula">f = f<sub>clk</sub> / ((PSC + 1) × (ARR + 1))</p>
+      </div>
+    </div>
+    <div class="tool-grid sub">
+      <div>
+        <h3>Find PSC and ARR for a target frequency</h3>
+        <div class="form">
+          <label>Target frequency <span class="unit-in"><input id="tTarget" class="num" type="text" inputmode="decimal" value="1000"><span>Hz</span></span></label>
+        </div>
+        <p class="hint">Searches 16-bit values and keeps ARR as large as possible for the finest PWM resolution.</p>
+      </div>
+      <div class="out">
+        <dl class="kv">
+          <dt>PSC</dt><dd id="tFoundPsc">—</dd>
+          <dt>ARR</dt><dd id="tFoundArr">—</dd>
+          <dt>Actual frequency</dt><dd id="tFoundF">—</dd>
+        </dl>
+        <pre class="code" id="tCode"></pre>
+        <button class="chip-btn" id="tCopy" type="button">Copy HAL code</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Number bases -->
+  <div class="panel tool" data-pane="bits" hidden>
+    <div class="panel-head bits-head">
+      <h3>Number bases and bits</h3>
+      <label class="inline-plain">Width
+        <select id="nWidth"><option value="8">8-bit</option><option value="16">16-bit</option><option value="32" selected>32-bit</option></select>
+      </label>
+    </div>
+    <div class="bases">
+      <label>Hexadecimal <span class="pre-in"><span>0x</span><input id="nHex" class="num" type="text" autocomplete="off" spellcheck="false"></span></label>
+      <label>Decimal (unsigned) <input id="nDec" class="num" type="text" inputmode="numeric" autocomplete="off"></label>
+      <label>Decimal (signed, two's complement) <input id="nSig" class="num" type="text" inputmode="numeric" autocomplete="off"></label>
+      <label>Octal <span class="pre-in"><span>0o</span><input id="nOct" class="num" type="text" inputmode="numeric" autocomplete="off" spellcheck="false"></span></label>
+      <label class="wide">Binary <span class="pre-in"><span>0b</span><input id="nBin" class="num" type="text" inputmode="numeric" autocomplete="off" spellcheck="false"></span></label>
+    </div>
+
+    <p class="bits-label">Select a bit to flip it. Bit 0 is on the right.</p>
+    <div class="bitgrid" id="bitGrid" role="group" aria-label="Bits"></div>
+
+    <div class="bit-ops">
+      <button class="chip-btn" type="button" data-op="shl">&lt;&lt; 1</button>
+      <button class="chip-btn" type="button" data-op="shr">&gt;&gt; 1</button>
+      <button class="chip-btn" type="button" data-op="not">NOT</button>
+      <button class="chip-btn" type="button" data-op="clear">Clear</button>
+      <button class="chip-btn" type="button" data-op="all">Set all</button>
+      <span class="sep"></span>
+      <label class="inline-plain">Operand B <span class="pre-in small"><span>0x</span><input id="nB" class="num" type="text" value="FF" spellcheck="false"></span></label>
+      <button class="chip-btn" type="button" data-op="and">AND</button>
+      <button class="chip-btn" type="button" data-op="or">OR</button>
+      <button class="chip-btn" type="button" data-op="xor">XOR</button>
+    </div>
+
+    <div class="tool-grid sub">
+      <dl class="kv">
+        <dt>Bits set</dt><dd id="nSet">—</dd>
+        <dt>Set bit indices</dt><dd id="nIdx">—</dd>
+        <dt>Highest set bit</dt><dd id="nMsb">—</dd>
+        <dt>Bytes (big-endian)</dt><dd id="nBytes">—</dd>
+      </dl>
+      <div>
+        <pre class="code" id="nCode"></pre>
+        <button class="chip-btn code-copy" id="nCopy" type="button">Copy C code</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resistor -->
+  <div class="panel tool" data-pane="resistor" hidden>
+    <div class="tool-grid">
+      <div>
+        <h3>4-band color code</h3>
+        <svg class="resistor" viewBox="0 0 360 90" role="img" aria-label="Resistor with the selected color bands">
+          <line x1="0" y1="45" x2="70" y2="45" class="lead-wire"/>
+          <line x1="290" y1="45" x2="360" y2="45" class="lead-wire"/>
+          <rect x="70" y="18" width="220" height="54" rx="22" class="body"/>
+          <rect id="b1" x="102" y="18" width="16" height="54"/>
+          <rect id="b2" x="132" y="18" width="16" height="54"/>
+          <rect id="b3" x="162" y="18" width="16" height="54"/>
+          <rect id="b4" x="236" y="18" width="16" height="54"/>
+        </svg>
+        <div class="form four">
+          <label>1st digit <select id="r1"></select></label>
+          <label>2nd digit <select id="r2"></select></label>
+          <label>Multiplier <select id="r3"></select></label>
+          <label>Tolerance <select id="r4"></select></label>
+        </div>
+      </div>
+      <div class="out">
+        <div class="big"><span id="rVal">—</span><small id="rTol">tolerance</small></div>
+        <dl class="kv">
+          <dt>Minimum</dt><dd id="rMin">—</dd>
+          <dt>Maximum</dt><dd id="rMax">—</dd>
+        </dl>
+        <h3 class="mt">Value to colors</h3>
+        <div class="form">
+          <label>Resistance <input id="rIn" class="num" type="text" value="4.7k" placeholder="e.g. 4.7k, 220, 1M"></label>
+        </div>
+        <p id="rBands" class="muted">—</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RC -->
+  <div class="panel tool" data-pane="rc" hidden>
+    <div class="tool-grid">
+      <div>
+        <h3>RC time constant and cutoff</h3>
+        <div class="form">
+          <label>Resistance <span class="unit-in"><input id="rcR" class="num" type="text" inputmode="decimal" value="10"><select id="rcRu"><option value="1">Ω</option><option value="1e3" selected>kΩ</option><option value="1e6">MΩ</option></select></span></label>
+          <label>Capacitance <span class="unit-in"><input id="rcC" class="num" type="text" inputmode="decimal" value="100"><select id="rcCu"><option value="1e-12">pF</option><option value="1e-9" selected>nF</option><option value="1e-6">µF</option></select></span></label>
+        </div>
+        <dl class="kv">
+          <dt>Time constant τ</dt><dd id="rcTau">—</dd>
+          <dt>Cutoff frequency f<sub>c</sub></dt><dd id="rcFc">—</dd>
+          <dt>Settles to 99.3% (5τ)</dt><dd id="rcSettle">—</dd>
+        </dl>
+        <p class="formula">τ = R · C &nbsp;&nbsp; f<sub>c</sub> = 1 / (2π · R · C)</p>
+      </div>
+      <figure class="chart">
+        <svg id="rcChart" viewBox="0 0 420 240" role="img" aria-label="Capacitor charging curve from 0 to 5 time constants"></svg>
+        <figcaption>Capacitor voltage while charging, as a share of the supply. At one τ it reaches 63.2%.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <!-- Ohm -->
+  <div class="panel tool" data-pane="ohm" hidden>
+    <div class="tool-grid">
+      <div>
+        <h3>Ohm's law and power</h3>
+        <div class="form">
+          <label>I know <select id="oPair">
+            <option value="VR" selected>Voltage and resistance</option>
+            <option value="VI">Voltage and current</option>
+            <option value="IR">Current and resistance</option>
+            <option value="PV">Power and voltage</option>
+            <option value="PI">Power and current</option>
+            <option value="PR">Power and resistance</option>
+          </select></label>
+          <label id="oLabA">Voltage (V) <input id="oA" class="num" type="text" inputmode="decimal" value="5"></label>
+          <label id="oLabB">Resistance (Ω) <input id="oB" class="num" type="text" inputmode="decimal" value="220"></label>
+        </div>
+      </div>
+      <div class="out">
+        <dl class="kv big-kv">
+          <dt>Voltage</dt><dd id="oV">—</dd>
+          <dt>Current</dt><dd id="oI">—</dd>
+          <dt>Resistance</dt><dd id="oR">—</dd>
+          <dt>Power</dt><dd id="oP">—</dd>
+        </dl>
+        <p class="formula">V = I · R &nbsp;&nbsp; P = V · I = V² / R = I² · R</p>
+        <p class="hint" id="oHint"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADC -->
+  <div class="panel tool" data-pane="adc" hidden>
+    <div class="tool-grid">
+      <div>
+        <h3>ADC resolution</h3>
+        <div class="form">
+          <label>Resolution <select id="aBits"><option>8</option><option>10</option><option selected>12</option><option>14</option><option>16</option></select></label>
+          <label>Reference voltage <span class="unit-in"><input id="aRef" class="num" type="text" inputmode="decimal" value="3.3"><span>V</span></span></label>
+          <label>Raw code <input id="aCode" class="num" type="text" inputmode="numeric" value="2048"></label>
+          <label>Input voltage <span class="unit-in"><input id="aVin" class="num" type="text" inputmode="decimal" value="1.65"><span>V</span></span></label>
+        </div>
+      </div>
+      <div class="out">
+        <div class="big"><span id="aLsb">—</span><small>one step (LSB)</small></div>
+        <dl class="kv">
+          <dt>Levels</dt><dd id="aLevels">—</dd>
+          <dt>Raw code → voltage</dt><dd id="aCodeV">—</dd>
+          <dt>Voltage → raw code</dt><dd id="aVinCode">—</dd>
+        </dl>
+        <p class="formula">V = code × V<sub>ref</sub> / (2ⁿ − 1)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- dB -->
+  <div class="panel tool" data-pane="db" hidden>
+    <div class="tool-grid three">
+      <div>
+        <h3>Power ratio</h3>
+        <div class="form">
+          <label>Ratio P₂/P₁ <input id="dPr" class="num" type="text" inputmode="decimal" value="2"></label>
+          <label>Decibels <input id="dPdb" class="num" type="text" inputmode="decimal"></label>
+        </div>
+        <p class="formula">dB = 10 · log₁₀(P₂/P₁)</p>
+      </div>
+      <div>
+        <h3>Voltage ratio</h3>
+        <div class="form">
+          <label>Ratio V₂/V₁ <input id="dVr" class="num" type="text" inputmode="decimal" value="10"></label>
+          <label>Decibels <input id="dVdb" class="num" type="text" inputmode="decimal"></label>
+        </div>
+        <p class="formula">dB = 20 · log₁₀(V₂/V₁)</p>
+      </div>
+      <div>
+        <h3>dBm and milliwatts</h3>
+        <div class="form">
+          <label>Power (mW) <input id="dMw" class="num" type="text" inputmode="decimal" value="100"></label>
+          <label>dBm <input id="dDbm" class="num" type="text" inputmode="decimal"></label>
+        </div>
+        <p class="formula">dBm = 10 · log₁₀(P / 1 mW)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quiz -->
+<section id="quiz" class="block">
+  <div class="block-head">
+    <h2>Quick quiz</h2>
+    <p>Answers within 1% count. Your best streak is saved in this browser.</p>
+  </div>
+  <div class="panel quiz">
+    <p class="q" id="qText">—</p>
+    <div class="quiz-row">
+      <input id="qAns" class="num" type="text" inputmode="decimal" placeholder="Your answer" aria-label="Your answer">
+      <button class="btn primary" id="qCheck" type="button">Check</button>
+      <button class="btn" id="qNext" type="button">New question</button>
+    </div>
+    <p id="qFeedback" class="feedback" aria-live="polite"></p>
+    <p class="streak">Streak <strong id="qStreak">0</strong> · Best <strong id="qBest">0</strong></p>
+  </div>
+</section>
+
+<!-- Cheat sheet -->
+<section id="cheat" class="block">
+  <div class="block-head">
+    <h2>Cheat sheet</h2>
+    <p>The constants worth memorising, grouped the way you reach for them.</p>
+  </div>
+  <div class="cheat">
+    <div class="card"><h3>Circuits</h3><ul><li>V = I · R</li><li>P = V · I</li><li>τ = R · C</li><li>f<sub>c</sub> = 1 / (2πRC)</li><li>X<sub>C</sub> = 1 / (2πfC)</li></ul></div>
+    <div class="card"><h3>Embedded</h3><ul><li>f = f<sub>clk</sub>/((PSC+1)(ARR+1))</li><li>Duty = CCR/(ARR+1)</li><li>LSB = V<sub>ref</sub>/(2ⁿ−1)</li><li>UART 115200 baud ≈ 11.5 kB/s</li><li>Set bit n: REG |= (1U &lt;&lt; n)</li><li>Clear bit n: REG &amp;= ~(1U &lt;&lt; n)</li></ul></div>
+    <div class="card"><h3>Signals</h3><ul><li>+3 dB ≈ 2 × power</li><li>+6 dB ≈ 2 × voltage</li><li>0 dBm = 1 mW</li><li>30 dBm = 1 W</li></ul></div>
+    <div class="card"><h3>Everyday</h3><ul><li>1 in = 25.4 mm</li><li>1 atm = 101 325 Pa</li><li>1 kWh = 3.6 MJ</li><li>°F = °C × 9/5 + 32</li><li>1 Ah = 3600 C</li></ul></div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing" class="block">
+  <div class="block-head">
+    <h2>Pricing</h2>
+    <p>Free for the lab bench at school. Pro for the one at work.</p>
+  </div>
+  <div class="plans">
+    <div class="plan">
+      <h3>Student</h3>
+      <p class="price">$0<small> forever</small></p>
+      <ul>
+        <li>All 9 quantity types</li>
+        <li>All seven bench tools</li>
+        <li>History and shareable links</li>
+        <li>Works offline in the browser</li>
+      </ul>
+      <a class="btn" href="#converter">Start converting</a>
+    </div>
+    <div class="plan pro">
+      <p class="badge">For working engineers</p>
+      <h3>Pro</h3>
+      <p class="price">$4<small> / month</small></p>
+      <ul>
+        <li>Everything in Student</li>
+        <li>Timer presets for every STM32 family</li>
+        <li>Batch conversion from CSV</li>
+        <li>5-band and SMD resistor codes</li>
+        <li>Priority support</li>
+      </ul>
+      <a class="btn primary" href="#pricing">Go Pro</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p>ConvertLab by <a href="https://cemaksu229.github.io/">Cem Aksu</a>. Built with Claude for the Generative AI for Engineering Applications course. Conversion factors follow SI and NIST definitions.</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
