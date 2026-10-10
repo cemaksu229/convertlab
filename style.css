@@ -81,7 +81,10 @@ main { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
 .ticker-track { display: flex; width: max-content; animation: tick 50s linear infinite; }
 .ticker span { padding: .55rem 1.6rem; font: .9rem var(--mono); white-space: nowrap; }
 @keyframes tick { to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; flex-wrap: wrap; width: auto; } }
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation: none; flex-wrap: wrap; width: auto; }
+  .ticker-track span:nth-child(n+12) { display: none; }
+}
 
 /* Sections */
 .block { padding: 3.2rem 0 1rem; }
